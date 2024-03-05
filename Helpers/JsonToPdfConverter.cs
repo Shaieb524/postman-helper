@@ -5,6 +5,8 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using Org.BouncyCastle.Utilities;
 using System.Xml.Linq;
+using System.Reflection.Metadata;
+using Document = iTextSharp.text.Document;
 
 namespace postman_helper.Helpers
 {
@@ -59,9 +61,36 @@ namespace postman_helper.Helpers
             // item is a request
             else if (item["request"] != null)
             {
-                var tt = item["request"];
-                document.Add(new Paragraph($"{indent}Request: {item["request"]["method"]} {item["name"]?.ToString()}"));
+                var req = item["request"];
+                ProcessRequestFormat(req, document, indent);
             }
+        }
+
+        private static void ProcessRequestFormat(JToken requestItem, Document document, string indent)
+        {
+            document.Add(new Paragraph($"{indent}Request: {requestItem["name"]?.ToString()}"));
+            indent += "  ";
+            if (requestItem["description"] != null)
+            {
+                document.Add(new Paragraph($"{indent}Description: {requestItem["description"]}"));
+            }
+            else
+            {
+                document.Add(new Paragraph($"{indent}Description: -----------"));
+            }
+
+            if (requestItem["auth"] is null)
+            {
+                document.Add(new Paragraph($"{indent}Auth: Inherited from parent"));
+            }
+            else
+            {
+                document.Add(new Paragraph($"{indent}Auth: {requestItem["auth"]}"));
+            }
+
+            document.Add(new Paragraph($"{indent}Method: {requestItem["method"]}"));
         }
     }
 }
+
+// TODO find url and enhance request formatting
