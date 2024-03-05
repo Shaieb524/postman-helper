@@ -43,40 +43,23 @@ namespace postman_helper.Helpers
             }
         }
 
-        private static void ProcessJsonItem(JToken item, Document document)
+        private static void ProcessJsonItem(JToken item, Document document, string indent = "")
         {
-            var type = item.Type.ToString();
-            int? itemChildsCount = 0;
-
-            if (item is JObject)
+            // item is a folder
+            if (item["item"] != null)
             {
-                itemChildsCount = item["item"]?.Count();
+                document.Add(new Paragraph($"{indent}Folder: {item["name"]?.ToString()}"));
+                indent += "  "; 
+
+                foreach (var subItem in item["item"])
+                {
+                    ProcessJsonItem(subItem, document, indent);
+                }
             }
-
-            switch (type)
+            // item is a request
+            else if (item["request"] != null)
             {
-                case "Array":
-                    if (item.Next is null)
-                    {
-                        ProcessJsonItem(item[i], document);
-                    }
-                    break;
-
-                case "Object":
-                    if (item is JObject jsonObject && jsonObject.ContainsKey("request"))
-                    {
-                        document.Add(new Paragraph($"       Request: {item["name"]?.ToString()}"));
-                    }
-                    else
-                    {
-                        document.Add(new Paragraph($"Folder: {item["name"]?.ToString()}"));
-                        ProcessJsonItem(item["item"], document);
-                    }
-                    break;
-
-                default:
-                    Console.WriteLine("DDDDDd");
-                    break;
+                document.Add(new Paragraph($"{indent}Request: {item["name"]?.ToString()}"));
             }
         }
     }
