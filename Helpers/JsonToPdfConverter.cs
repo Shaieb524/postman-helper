@@ -59,7 +59,8 @@ namespace postman_helper.Helpers
             // item is a request
             else if (item["request"] != null)
             {
-                document.Add(new Paragraph($"{indent}Request: {item["name"]?.ToString()}"));
+                var tt = item["request"];
+                document.Add(new Paragraph($"{indent}Request: {item["request"]["method"]} {item["name"]?.ToString()}"));
             }
         }
     }
