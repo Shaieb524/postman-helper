@@ -51,7 +51,7 @@ namespace postman_helper.Helpers
             if (item["item"] != null)
             {
                 document.Add(new Paragraph($"{indent}Folder: {item["name"]?.ToString()}"));
-                indent += "  "; 
+                indent += "  ";
 
                 foreach (var subItem in item["item"])
                 {
@@ -62,14 +62,18 @@ namespace postman_helper.Helpers
             else if (item["request"] != null)
             {
                 var req = item["request"];
-                ProcessRequestFormat(req, document, indent);
+                var reqName = item["name"].ToString();
+                ProcessRequestFormat(req, reqName, document, indent);
             }
         }
 
-        private static void ProcessRequestFormat(JToken requestItem, Document document, string indent)
+        private static void ProcessRequestFormat(JToken requestItem, string reqName, Document document, string indent)
         {
             document.Add(new Paragraph($"{indent}Request: {requestItem["name"]?.ToString()}"));
             indent += "  ";
+
+            document.Add(new Paragraph($"{indent}Name: {reqName}"));
+
             if (requestItem["description"] != null)
             {
                 document.Add(new Paragraph($"{indent}Description: {requestItem["description"]}"));
@@ -85,12 +89,16 @@ namespace postman_helper.Helpers
             }
             else
             {
-                document.Add(new Paragraph($"{indent}Auth: {requestItem["auth"]}"));
+                // TODO fix switch cases for auth types
+                document.Add(new Paragraph($"{indent}Auth: {requestItem["auth"]["bearer"]}"));
             }
 
             document.Add(new Paragraph($"{indent}Method: {requestItem["method"]}"));
+            document.Add(new Paragraph($"{indent}URL: {requestItem["url"]["raw"]}"));
+            document.Add(new Paragraph($"-------------------"));
         }
     }
 }
 
 // TODO find url and enhance request formatting
+// TODO get format from postman print collection pdf
