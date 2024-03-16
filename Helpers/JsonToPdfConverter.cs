@@ -8,7 +8,7 @@ using System.Xml.Linq;
 using System.Reflection.Metadata;
 using Document = iTextSharp.text.Document;
 using Newtonsoft.Json;
-using postman_helper.Models;
+using postman_helper.Models.PostmanCollection;
 
 namespace postman_helper.Helpers
 {
