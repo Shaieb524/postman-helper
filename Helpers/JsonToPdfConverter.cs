@@ -7,6 +7,8 @@ using Org.BouncyCastle.Utilities;
 using System.Xml.Linq;
 using System.Reflection.Metadata;
 using Document = iTextSharp.text.Document;
+using Newtonsoft.Json;
+using postman_helper.Models;
 
 namespace postman_helper.Helpers
 {
@@ -18,7 +20,7 @@ namespace postman_helper.Helpers
 
         public static void ConvertPostmanCollectionToPdf(string jsonFilePath, string pdfFilePath)
         {
-            var jsonContent = File.ReadAllText(jsonFilePath);
+            string jsonContent = File.ReadAllText(jsonFilePath);
             var jsonObject = JObject.Parse(jsonContent);
 
             using (Document document = new Document())
@@ -32,6 +34,7 @@ namespace postman_helper.Helpers
                     document.Add(new Paragraph(""));
                 }
                 var postmantCollection = jsonObject["item"];
+                var collection = JsonConvert.DeserializeObject<PostmanCollection>(jsonContent);
 
                 if (postmantCollection is JArray items)
                 {
@@ -101,4 +104,5 @@ namespace postman_helper.Helpers
 }
 
 // TODO find url and enhance request formatting
+// TODO deserialize the postman collection first
 // TODO get format from postman print collection pdf
